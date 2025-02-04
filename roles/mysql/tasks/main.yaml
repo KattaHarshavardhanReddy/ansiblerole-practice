@@ -20,7 +20,7 @@
 - name: connect to mysql server
   community.mysql.mysql_info:
     login_user: root
-    login_password: "{{ u_pwd }}"
+    login_password: "{{ lookup('amazon.aws.aws_ssm', '/expense/mysql/u_pwd', decrypt=False ) }}"
     login_host: "{{ mysql_host }}"
   register: mysql_info
   ignore_errors: true
@@ -30,5 +30,5 @@
     msg: "mysql_info {{ mysql_info }}"
 
 - name: set root password
-  ansible.builtin.command: " mysql_secure_installation --set-root-pass {{ u_pwd }}"
+  ansible.builtin.command: " mysql_secure_installation --set-root-pass {{ lookup('amazon.aws.aws_ssm', '/expense/mysql/u_pwd', decrypt=False ) }} }}"
   when: mysql_info.failed is true
